@@ -15,6 +15,12 @@ var rootCmd = &cobra.Command{
 	Run:   run,
 }
 
+var indexToReplicate string
+var contribution float64
+var percentage int
+var roundShareQuantity bool
+var outputToCsv bool
+
 func run(cmd *cobra.Command, args []string) {
 	replicator := replicator.Client{
 		Index:              indexToReplicate,
@@ -23,13 +29,8 @@ func run(cmd *cobra.Command, args []string) {
 		RoundShareQuantity: roundShareQuantity,
 	}
 
-	replicator.Run()
+	replicator.Run(outputToCsv)
 }
-
-var indexToReplicate string
-var contribution float64
-var percentage int
-var roundShareQuantity bool
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
@@ -45,4 +46,5 @@ func init() {
 	rootCmd.MarkFlagRequired("contribution")
 	rootCmd.Flags().IntVarP(&percentage, "percentage", "p", 100, "percentage of the index you wish to replicate")
 	rootCmd.Flags().BoolVarP(&roundShareQuantity, "round", "r", false, "round share buy quantity to the nearest whole share")
+	rootCmd.Flags().BoolVarP(&outputToCsv, "output-to-csv", "", false, "output to a local csv file")
 }

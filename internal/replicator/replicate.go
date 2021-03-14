@@ -1,25 +1,36 @@
 package replicator
 
 import (
+	"encoding/csv"
 	"fmt"
+	"log"
 	"math"
+	"os"
 
 	"github.com/brogand93/index-replicate/pkg/index"
+	"github.com/olekukonko/tablewriter"
 )
 
-func (client *Client) Run() error {
+const (
+	maxColWidth = 50
+	outputCSV   = "index_info.csv"
+)
+
+func (client *Client) Run(outputToCsv bool) error {
 	index, err := index.Get(client.Index)
 	if err != nil {
 		return err
 	}
 
 	percentageCovered := float32(0)
+	totalContribution := float32(0)
 	replicatedIndex := ReplicatedIndex{}
 
 	for _, component := range index.Components {
 		if (percentageCovered + component.Weight) < client.Percentage {
 			weightInReplicatedIndex := client.componentWeight(component)
 			sharesInRerplicatedIndex := client.sharesToBuy(component, weightInReplicatedIndex)
+			valueInIndex := float32(component.Price) * sharesInRerplicatedIndex
 			if client.RoundShareQuantity {
 				sharesInRerplicatedIndex = float32(
 					math.Round(float64(sharesInRerplicatedIndex)),
@@ -30,12 +41,21 @@ func (client *Client) Run() error {
 				symbol: component.Symbol,
 				weight: weightInReplicatedIndex,
 				shares: sharesInRerplicatedIndex,
+				value:  valueInIndex,
 			})
+			totalContribution = totalContribution + valueInIndex
 		}
+
 		percentageCovered = percentageCovered + component.Weight
 	}
 
-	client.write(replicatedIndex)
+	replicatedIndex.Total = totalContribution
+
+	err = client.write(replicatedIndex, outputToCsv)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
 
 	return nil
 }
@@ -58,8 +78,59 @@ func (client *Client) sharesToBuy(component index.Component, weight float32) flo
 	return availableForComponent / float32(component.Price)
 }
 
-func (client *Client) write(replicatedIndex ReplicatedIndex) {
+func (client *Client) write(replicatedIndex ReplicatedIndex, outputToCsv bool) error {
+	data := [][]string{}
+
 	for _, component := range replicatedIndex.Components {
-		fmt.Printf("%s : %v\n", component.symbol, component.shares)
+		data = append(data, []string{
+			component.name,
+			component.symbol,
+			fmt.Sprintf("%.2f", component.shares),
+			fmt.Sprintf("%.2f %%", component.weight),
+			fmt.Sprintf("%.2f $", component.value),
+		})
 	}
+
+	client.writeTable(data, replicatedIndex.Total)
+	if outputToCsv {
+		client.writeCSV(data)
+	}
+
+	return nil
+}
+
+func (client *Client) writeTable(data [][]string, total float32) error {
+	var table *tablewriter.Table
+	table = tablewriter.NewWriter(os.Stdout)
+
+	table.SetHeader([]string{
+		"Name", "Symbol", "Quantity", "Weight", "Value",
+	})
+	table.SetFooter([]string{
+		"", "", "", "Total", fmt.Sprintf("%.2f $", total),
+	})
+	table.SetColWidth(maxColWidth)
+	table.AppendBulk(data)
+	table.Render()
+	return nil
+
+}
+
+func (client *Client) writeCSV(data [][]string) error {
+	file, err := os.Create(outputCSV)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	for _, value := range data {
+		err := writer.Write(value)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

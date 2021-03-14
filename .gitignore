@@ -1,2 +1,9 @@
-index-replicate
+# go specific
+
 vendor
+
+# project files
+
+index_info.csv
+index-replicate
+bin/
