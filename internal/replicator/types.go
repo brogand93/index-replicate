@@ -8,6 +8,7 @@ type Client struct {
 }
 
 type ReplicatedIndex struct {
+	Total      float32
 	Components []Component
 }
 
@@ -16,4 +17,5 @@ type Component struct {
 	symbol string
 	weight float32
 	shares float32
+	value  float32
 }

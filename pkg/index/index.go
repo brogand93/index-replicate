@@ -18,7 +18,7 @@ var (
 	}
 )
 
-// Get returns infomation for a given index from a configured data source
+// Get returns information for a given index from a configured data source
 func Get(index string) (*Index, error) {
 	indexUrl := strings.Join([]string{dataSource.url, index}, "/")
 	request, err := http.NewRequest(http.MethodGet, indexUrl, nil)
