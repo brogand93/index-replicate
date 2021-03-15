@@ -1,13 +1,14 @@
 FROM golang:1 as build
 
-ADD . /source
+COPY . /source
 
 WORKDIR /source
 
+ENV CGO_ENABLED 0
 RUN make index-replicate
 
-FROM centos
+FROM scratch
 
-COPY --from=build /source/index-replicate /index-replicate
+COPY --from=build /source/index-replicate /
 
-ENTRYPOINT "/index-replicate"
+ENTRYPOINT ["/index-replicate"]
