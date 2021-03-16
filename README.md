@@ -1,18 +1,18 @@
 # index-replicate
 
-index-replicate allows you to replicate an index ETF. It allows you to create a custom index to use as the basis of a stock portfolio. 
+index-replicate allows you to replicate an index ETF. It allows you to create a custom index to use as the basis of a stock portfolio.
 
 This form of do-it-yourself indexing is pointless for many people. It's going to be a lot simpler to simply invest in an ETF that tracks the index you wish to track. However, if you are a resident of EU this may not be possible without significant tax hurdles getting in your way.
 
-This small CLI aims to get a close approximation of a chosen index (or percentage of an index) at the previous trading day's closing prices for a given amount of money. The source this data is https://svcga.com/sc/index.
+This small CLI aims to get a close approximation of a chosen index (or percentage of an index) at the previous trading day's closing prices for a given amount of money. The source this data is [svcga.com/sc/index](https://svcga.com/sc/index).
 
-# Installing
+## Installing
 
 Download the correct release for your system from the [releases section](https://github.com/brogand93/index-replicate/releases)
 
-# Running the Index Replicater
+## Running the Index Replicater
 
-## Help Page
+### Help Page
 
 ```bash
 $ index-replicate -h
@@ -31,7 +31,7 @@ Flags:
   -r, --round                round share buy quantity to the nearest whole share
 ```
 
-## Example For S&P 500
+### Example For S&P 500
 
 If you wanted to replicate the top 70% of the S&P 500, and you wanted to invest 10000 you could run the following:
 
