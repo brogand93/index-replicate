@@ -17,13 +17,13 @@ type Component struct {
 }
 
 type IndexNotFound struct {
-	message string
+	Message string
 }
 
 type DataSourceChanged struct {
-	message string
+	Message string
 }
 
 type DataSourceUnavailable struct {
-	message string
+	Message string
 }
