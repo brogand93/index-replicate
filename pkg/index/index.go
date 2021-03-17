@@ -33,7 +33,7 @@ func Get(index string) (*Index, error) {
 	}
 
 	if response.StatusCode == http.StatusNotFound {
-		return nil, IndexNotFound{
+		return nil, NotFound{
 			Message: fmt.Sprintf("%s is not a valid index for this data source", index),
 		}
 	}
@@ -64,7 +64,7 @@ func (e DataSourceChanged) Error() string {
 	return e.Message
 }
 
-func (e IndexNotFound) Error() string {
+func (e NotFound) Error() string {
 	return e.Message
 }
 

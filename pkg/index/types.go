@@ -16,7 +16,7 @@ type Component struct {
 	Value  float32 `json:"value"`
 }
 
-type IndexNotFound struct {
+type NotFound struct {
 	Message string
 }
 
