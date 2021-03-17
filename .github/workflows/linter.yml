@@ -13,6 +13,3 @@ jobs:
 
       - name: Lint
         uses: golangci/golangci-lint-action@v2
-        with:
-          entrypoint: golangci-lint
-          args: run
