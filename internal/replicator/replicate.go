@@ -37,11 +37,11 @@ func (client *Client) Run(outputToCsv bool) error {
 				)
 			}
 			replicatedIndex.Components = append(replicatedIndex.Components, Component{
-				name:   component.Name,
-				symbol: component.Symbol,
-				weight: weightInReplicatedIndex,
-				shares: sharesInRerplicatedIndex,
-				value:  valueInIndex,
+				Name:   component.Name,
+				Symbol: component.Symbol,
+				Weight: weightInReplicatedIndex,
+				Shares: sharesInRerplicatedIndex,
+				Value:  valueInIndex,
 			})
 			totalContribution = totalContribution + valueInIndex
 		}
@@ -83,25 +83,28 @@ func (client *Client) write(replicatedIndex ReplicatedIndex, outputToCsv bool) e
 
 	for _, component := range replicatedIndex.Components {
 		data = append(data, []string{
-			component.name,
-			component.symbol,
-			fmt.Sprintf("%.2f", component.shares),
-			fmt.Sprintf("%.2f %%", component.weight),
-			fmt.Sprintf("%.2f $", component.value),
+			component.Name,
+			component.Symbol,
+			fmt.Sprintf("%.2f", component.Shares),
+			fmt.Sprintf("%.2f %%", component.Weight),
+			fmt.Sprintf("%.2f $", component.Value),
 		})
 	}
 
-	client.writeTable(data, replicatedIndex.Total)
+	err := client.writeTable(data, replicatedIndex.Total)
+	if err != nil {
+		return err
+	}
+
 	if outputToCsv {
-		client.writeCSV(data)
+		return client.writeCSV(data)
 	}
 
 	return nil
 }
 
 func (client *Client) writeTable(data [][]string, total float32) error {
-	var table *tablewriter.Table
-	table = tablewriter.NewWriter(os.Stdout)
+	table := tablewriter.NewWriter(os.Stdout)
 
 	table.SetHeader([]string{
 		"Name", "Symbol", "Quantity", "Weight", "Value",

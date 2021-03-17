@@ -16,14 +16,14 @@ type Component struct {
 	Value  float32 `json:"value"`
 }
 
-type IndexNotFound struct {
-	message string
+type NotFound struct {
+	Message string
 }
 
 type DataSourceChanged struct {
-	message string
+	Message string
 }
 
 type DataSourceUnavailable struct {
-	message string
+	Message string
 }

@@ -1,10 +1,10 @@
 package replicator
 
 type Client struct {
-	Index              string
+	RoundShareQuantity bool
 	Percentage         float32
 	Contribution       float64
-	RoundShareQuantity bool
+	Index              string
 }
 
 type ReplicatedIndex struct {
@@ -13,9 +13,9 @@ type ReplicatedIndex struct {
 }
 
 type Component struct {
-	name   string
-	symbol string
-	weight float32
-	shares float32
-	value  float32
+	Name   string
+	Symbol string
+	Weight float32
+	Shares float32
+	Value  float32
 }

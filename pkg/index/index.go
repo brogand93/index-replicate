@@ -33,14 +33,14 @@ func Get(index string) (*Index, error) {
 	}
 
 	if response.StatusCode == http.StatusNotFound {
-		return nil, IndexNotFound{
-			message: fmt.Sprintf("%s is not a valid index for this data source", index),
+		return nil, NotFound{
+			Message: fmt.Sprintf("%s is not a valid index for this data source", index),
 		}
 	}
 
 	if response.StatusCode != http.StatusOK {
 		return nil, DataSourceUnavailable{
-			message: fmt.Sprintf("%s data source is either unavailable or misconfigured", dataSource.url),
+			Message: fmt.Sprintf("%s data source is either unavailable or misconfigured", dataSource.url),
 		}
 	}
 
@@ -54,20 +54,20 @@ func parseIndex(sourceData []byte) (*Index, error) {
 	var index Index
 	if err := json.Unmarshal(sourceData, &index); err != nil {
 		return &Index{}, DataSourceChanged{
-			message: "it looks like the data source format has changed",
+			Message: "it looks like the data source format has changed",
 		}
 	}
 	return &index, nil
 }
 
 func (e DataSourceChanged) Error() string {
-	return e.message
+	return e.Message
 }
 
-func (e IndexNotFound) Error() string {
-	return e.message
+func (e NotFound) Error() string {
+	return e.Message
 }
 
 func (e DataSourceUnavailable) Error() string {
-	return e.message
+	return e.Message
 }

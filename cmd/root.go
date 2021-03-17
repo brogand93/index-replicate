@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"log"
+
 	"github.com/brogand93/index-replicate/internal/replicator"
 	"github.com/spf13/cobra"
 
@@ -12,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Use:   "index-replicate",
 	Short: "Index Replicate is a lightewight client to pull stock index",
 	Long:  `Index Replicate allows you to replicate an index`,
-	Run:   run,
+	RunE:  run,
 }
 
 var indexToReplicate string
@@ -21,7 +23,7 @@ var percentage int
 var roundShareQuantity bool
 var outputToCsv bool
 
-func run(cmd *cobra.Command, args []string) {
+func run(cmd *cobra.Command, args []string) error {
 	replicator := replicator.Client{
 		Index:              indexToReplicate,
 		Contribution:       contribution,
@@ -29,7 +31,7 @@ func run(cmd *cobra.Command, args []string) {
 		RoundShareQuantity: roundShareQuantity,
 	}
 
-	replicator.Run(outputToCsv)
+	return replicator.Run(outputToCsv)
 }
 
 func Execute() {
@@ -41,9 +43,17 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().StringVarP(&indexToReplicate, "index", "i", "sp500", "index to replicate [sp500, dowjones, nasdaq100]")
-	rootCmd.MarkFlagRequired("index")
+	err := rootCmd.MarkFlagRequired("index")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
 	rootCmd.Flags().Float64VarP(&contribution, "contribution", "c", 0, "amount you wish to invest in the index")
-	rootCmd.MarkFlagRequired("contribution")
+	err = rootCmd.MarkFlagRequired("contribution")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
 	rootCmd.Flags().IntVarP(&percentage, "percentage", "p", 100, "percentage of the index you wish to replicate")
 	rootCmd.Flags().BoolVarP(&roundShareQuantity, "round", "r", false, "round share buy quantity to the nearest whole share")
 	rootCmd.Flags().BoolVarP(&outputToCsv, "output-to-csv", "", false, "output to a local csv file")
