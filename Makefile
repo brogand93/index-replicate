@@ -1,5 +1,8 @@
 VERSION = 0.0.1
 
+test:
+	go test ./...
+
 image:
 	docker build -t index-replicate:${VERSION} .
 	docker tag index-replicate:${VERSION} index-replicate:latest

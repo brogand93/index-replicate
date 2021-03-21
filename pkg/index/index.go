@@ -8,38 +8,39 @@ import (
 	"strings"
 )
 
-type source struct {
-	url string
-}
-
 var (
 	dataSource = source{
 		url: "https://svcga.com/sc/index",
 	}
 )
 
+func NewClient() *Client {
+	return &Client{
+		Http: &http.Client{},
+	}
+}
+
 // Get returns information for a given index from a configured data source
-func Get(index string) (*Index, error) {
+func (c *Client) Get(index string) (*Index, error) {
 	indexUrl := strings.Join([]string{dataSource.url, index}, "/")
 	request, err := http.NewRequest(http.MethodGet, indexUrl, nil)
 	if err != nil {
-		return nil, err
+		return &Index{}, err
 	}
 
-	client := &http.Client{}
-	response, err := client.Do(request)
+	response, err := c.Http.Do(request)
 	if err != nil {
-		return nil, err
+		return &Index{}, err
 	}
 
 	if response.StatusCode == http.StatusNotFound {
-		return nil, NotFound{
+		return &Index{}, NotFound{
 			Message: fmt.Sprintf("%s is not a valid index for this data source", index),
 		}
 	}
 
 	if response.StatusCode != http.StatusOK {
-		return nil, DataSourceUnavailable{
+		return &Index{}, DataSourceUnavailable{
 			Message: fmt.Sprintf("%s data source is either unavailable or misconfigured", dataSource.url),
 		}
 	}

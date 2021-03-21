@@ -1,9 +1,7 @@
 name: go-lint
-
 on: push
-
 jobs:
-  super-lint:
+  golangci-lint:
     name: Lint golang codebase
     runs-on: ubuntu-latest
 
