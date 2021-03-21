@@ -1,7 +1,5 @@
 name: go-lint
-
 on: push
-
 jobs:
   golangci-lint:
     name: Lint golang codebase
