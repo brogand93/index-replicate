@@ -1,5 +1,7 @@
 # index-replicate
 
+[![Build Status](https://github.com/brogand93/index-replicate/actions/workflows/go-tests.yml/badge.svg)](https://github.com/brogand93/index-replicate/actions/workflows)
+
 index-replicate allows you to replicate an index ETF. It allows you to create a custom index to use as the basis of a stock portfolio.
 
 This form of do-it-yourself indexing is pointless for many people. It's going to be a lot simpler to simply invest in an ETF that tracks the index you wish to track. If however, you are a resident of EU this may not be possible without significant tax hurdles getting in your way.
